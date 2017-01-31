@@ -88,7 +88,7 @@ module.exports = {
 		autoprefixer({ browsers: 'last 2 versions' })
 	],
 
-	plugins: [
+	plugins: ([
 		new webpack.NoErrorsPlugin(),
 		new ExtractTextPlugin('style.css', {
 			allChunks: true,
@@ -100,13 +100,34 @@ module.exports = {
 		new HtmlWebpackPlugin({
 			template: './index.html',
 			minify: { collapseWhitespace: true }
-		}),
-		new ReplacePlugin([{
-			partten: /throw\s+(new\s+)?[a-zA-Z]+Error\s*\(/g,
-			replacement: (s) => 'throw 0;'+s
-			// replacement: () => 'throw 0;('
-		}])
-	],
+		})
+	]).concat( ENV==='production' ? [
+		new ReplacePlugin([
+			{
+				partten: /throw\s+(new\s+)?[a-zA-Z]+Error\s*\(/g,
+				replacement: (s) => 'throw 0;'+s
+			},
+			{
+				partten: /\binvariant\s\(/g,
+				replacement: () => '('
+			}
+		]),
+		new webpack.optimize.UglifyJsPlugin({
+			compress: {
+				unsafe: true,
+				collapse_vars: true,
+				pure_getters: true,
+				pure_funcs: [
+					'classCallCheck',
+					'_possibleConstructorReturn',
+					'_classCallCheck',
+					'Object.freeze',
+					'invariant',
+					'warning'
+				]
+			}
+		})
+	] : []),
 
 	stats: { colors: true },
 
