@@ -14,7 +14,7 @@ options.vnode = vnode => {
 	if (old) old(vnode);
 };
 
-const Children = { only: c => c[0] };
+const Children = { only: c => c[0], count: c => c.length };
 
 export { createElement, Children, PropTypes, Component };
 export default { createElement, Children, PropTypes, Component };
