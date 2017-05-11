@@ -104,11 +104,11 @@ module.exports = {
 	]).concat( ENV==='production' ? [
 		new ReplacePlugin([
 			{
-				partten: /throw\s+(new\s+)?[a-zA-Z]+Error\s*\(/g,
+				pattern: /throw\s+(new\s+)?[a-zA-Z]+Error\s*\(/g,
 				replacement: (s) => 'throw 0;'+s
 			},
 			{
-				partten: /\binvariant\s\(/g,
+				pattern: /\binvariant\s\(/g,
 				replacement: () => '('
 			}
 		]),
