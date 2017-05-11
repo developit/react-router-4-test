@@ -5,7 +5,7 @@
  *		- vnode.children deleted when empty
  */
 
-import { h as createElement, Component, options } from 'preact';
+import { h as createElement, cloneElement, Component, options } from 'preact';
 import PropTypes from 'proptypes';
 
 let old = options.vnode;
@@ -14,7 +14,22 @@ options.vnode = vnode => {
 	if (old) old(vnode);
 };
 
-const Children = { only: c => c[0], count: c => c.length };
+const childrenForEach = (children, cb) =>
+	Array.isArray(children) && children.forEach((VNode) => {
+		// this is gross, send help
+		VNode.props = VNode.attributes;
+		cb(VNode);
+		delete VNode.props;
+	});
 
-export { createElement, Children, PropTypes, Component };
-export default { createElement, Children, PropTypes, Component };
+const Children = {
+	count: c => c.length,
+	forEach: childrenForEach,
+	only: c => c[0]
+};
+
+// TODO
+const isValidElement = (element) => true;
+
+export { createElement, cloneElement, isValidElement, Children, PropTypes, Component };
+export default { createElement, cloneElement, isValidElement, Children, PropTypes, Component };
